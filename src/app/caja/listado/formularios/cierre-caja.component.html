@@ -1,0 +1,315 @@
+<div class="card">
+  <div class="card-header card-header-icon">
+    <div class="card-icon cardHeader">
+      <i class="material-icons">lock</i>
+    </div>
+    <h4 class="card-title">Cerrar Caja
+      <button mat-icon-button class="close" (click)="close()">
+        <i class="material-icons">close</i> </button>
+    </h4>
+  </div>
+  <br>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12">
+                <mat-form-field class="example-full-width">
+                  <mat-label for="montoEfectivo">Monto Total Cobrado Efectivo: S/</mat-label>
+                  <input matInput type="number" name="montoEfectivo" #montoEfectivo="ngModel" id="montoEfectivo"
+                    [(ngModel)]="params.montoEfectivo" readonly required />
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <mat-form-field class="example-full-width">
+                  <mat-label for="montoDeposito">Monto Total Cobrado Depósito: S/</mat-label>
+                  <input matInput type="number" name="montoDeposito" #montoDeposito="ngModel" id="montoDeposito"
+                    [(ngModel)]="params.montoDeposito" readonly required />
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <mat-form-field class="example-full-width">
+                  <mat-label for="montoCierre">Monto Final: S/</mat-label>
+                  <input matInput type="number" name="montoCierre" #montoCierre="ngModel" id="montoCierre"
+                    [(ngModel)]="params.montoCierre" readonly required />
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12">
+                <mat-form-field class="example-full-width">
+                  <mat-label for="saldoEfectivo">Monto Real Efectivo: S/</mat-label>
+                  <input matInput type="number" name="saldoEfectivo" #saldoEfectivo="ngModel" id="saldoEfectivo"
+                    [(ngModel)]="params.saldoEfectivo" required (input)="calcularFaltanteEfectivo()"
+                    (keypress)="setInputPattern($event, 'preciosMayorCero')"
+                    [pattern]="setValidatorPattern('preciosMayorCero', setQuantifier('+'), true, true)" />
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <mat-form-field class="example-full-width">
+                  <mat-label for="saldoDeposito">Monto Real Depósito: S/</mat-label>
+                  <input matInput type="number" name="saldoDeposito" #saldoTarjeta="ngModel" id="saldoDeposito"
+                    [(ngModel)]="params.saldoDeposito" required (input)="calcularFaltanteTarjeta()"
+                    (keypress)="setInputPattern($event, 'preciosMayorCero')"
+                    [pattern]="setValidatorPattern('preciosMayorCero', setQuantifier('+'), true, true)"
+                    [disabled]="visible" />
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="row">
+              <div class="col-sm-12">
+                <mat-form-field class="example-full-width">
+                  <mat-label for="faltanteEfectivo">Monto Faltante Efectivo: S/</mat-label>
+                  <input matInput type="number" name="faltanteEfectivo" #faltanteEfectivo="ngModel"
+                    id="faltanteEfectivo" [(ngModel)]="params.faltanteEfectivo" readonly required />
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <mat-form-field class="example-full-width">
+                  <mat-label for="faltanteDeposito">Monto Faltante Depósito: S/</mat-label>
+                  <input matInput type="number" name="faltanteDeposito" #faltanteDeposito="ngModel"
+                    id="faltanteDeposito" [(ngModel)]="params.faltanteDeposito" readonly required />
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-sm-12">
+                <mat-form-field class="example-full-width">
+                  <mat-label for="saldoFaltante">Faltante Total: S/</mat-label>
+                  <input matInput type="number" name="saldoFaltante" #saldoFaltante="ngModel" id="saldoFaltante"
+                    [(ngModel)]="params.saldoFaltante" readonly required />
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="example-full-width">
+          <mat-label for="observacion">Observación:</mat-label>
+          <textarea matInput name="observacion" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5"
+            #observacion="ngModel" id="observacion" [(ngModel)]="params.observacion"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="example-full-width">
+          <mat-label for="montoApertura">Monto Apertura: S/</mat-label>
+          <input matInput type="number" name="montoApertura" #montoApertura="ngModel" id="montoApertura"
+            [(ngModel)]="params.montoApertura" readonly required />
+          <mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="text-center">
+      <button mat-raised-button="" (click)="actualizarCierre()"
+        [disabled]="params.saldoEfectivo==null || params.saldoDeposito==null" type="button"
+        class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Registrar"></button>
+        &nbsp;<button mat-raised-button="" (click)="close()" type="button" class="btn btn-fill cerrar btn-sm btn-primary"
+        matTooltip="Cerrar">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<div style="display:none">
+  <div id="print-section-material" style="font-family: Arial, Helvetica, sans-serif;color: #000;font-size: 12px;">
+    <table align="center" width="1024" border="0" style="text-align: center">
+      <tbody>
+        <tr>
+          <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td width="30%">
+                    <div style="margin-bottom: 5px;padding-left: 20%;">
+                      <img style="height: 100px; width: 150px;"
+                        src="{{logo ? logo : './assets/img/credismart/icono_credi.jpeg'}}">
+                    </div>
+                  </td>
+                  <td width="40%">
+                    <div
+                      style="text-align: center; font-family: Arial, Helvetica, 'sans-serif'; color: #212121;  font-size: 28px;line-height: 35px; ">
+                      {{nombre}}<br>
+                      {{dir}}<br>
+                      Tlf: {{tel}}
+                    </div>
+                  </td>
+                  <td width="30%">
+                    <div
+                      style="text-align: center; font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 20px; line-height: 20px;">
+                      <strong>Fecha:</strong> {{fecha_str}}<br>
+                      <strong>Hora: </strong>{{hora}} <br>
+                    </div>
+                  </td>
+                </tr>
+                <br>
+              </tbody>
+              <br>
+            </table>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td>
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 24px; padding: 15px; text-align: CENTER; line-height: 28px">
+                      <strong style="display: inline-table">CIERRE DE CAJA</strong>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border: 2px solid #000;">
+              <tbody>
+                <tr>
+                  <td width="20%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: right; line-height: 28px">
+                      <strong>Personal:</strong><br>
+                      <strong>Descripción de Apertura:</strong><br>
+                      <strong>Monto de Apertura:</strong><br>
+                      <strong>Total Gastos:</strong>
+                    </div>
+                  </td>
+                  <td width="20%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: left; line-height: 28px; text-transform: uppercase">
+                      {{element.noNombre}}<br>
+                      {{element.descripcionApertura}}<br>
+                      {{params.montoApertura | currency: 'S/'}}<br>
+                      {{sumaGastos | currency: 'S/'}}
+                    </div>
+                  </td>
+                  <td width="20%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: right; line-height: 28px">
+                      <strong>Caja:</strong><br>
+                      <strong>Fecha de Apertura: </strong><br>
+                      <strong>Total Préstamos: </strong><br>
+                      <strong>Fecha de Cierre: </strong>
+                    </div>
+                  </td>
+                  <td width="20%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: left; line-height: 28px; text-transform: uppercase">
+                      {{element.descripcionCaja}}<br>
+                      {{element.noApellido }}<br>
+                      {{sumaPrestamo | currency: 'S/'}}<br>
+                      {{fecha_str}} {{hora}}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td>&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td width="5%"></td>
+                  <td width="30%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: right; line-height: 28px">
+                      <strong>Monto Total Cobrado Efectivo:</strong><br>
+                      <strong>Monto Real Efectivo:</strong><br>
+                      <strong>Monto Faltante Efectivo: </strong>
+                    </div>
+                  </td>
+                  <td width="15%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: left; line-height: 28px; text-transform: uppercase">
+                      {{params.montoEfectivo | currency: 'S/'}}<br>
+                      {{params.saldoEfectivo | currency: 'S/'}}<br>
+                      {{params.faltanteEfectivo | currency: 'S/'}}
+                    </div>
+                  </td>
+                  <td width="30%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: right; line-height: 28px">
+                      <strong>Monto Total Cobrado Depósito: </strong><br>
+                      <strong>Monto Real Depósito: </strong><br>
+                      <strong>Monto Faltante Depósito: </strong>
+                    </div>
+                  </td>
+                  <td width="15%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: left; line-height: 28px; text-transform: uppercase">
+                      {{params.montoDeposito | currency: 'S/' }}<br>
+                      {{params.saldoDeposito | currency: 'S/'}}<br>
+                      {{params.faltanteDeposito | currency: 'S/'}}
+                    </div>
+                  </td>
+                  <td width="15%"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table width="100%" height="120" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td width="100%">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: center; line-height: 30px;">
+                      <strong>Monto Total: {{params.montoCierre | currency: 'S/'}}</strong>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td>&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td width="50%" align="center" valign="top">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 0; text-align: center; line-height: 28px; width: 60%; margin: 0 auto; border-top:1px solid #000">
+                      <strong>Firma del Personal</strong></div>
+                  </td>
+                  <td width="50%" align="center" valign="top">
+                    <div
+                      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 0; text-align: center; line-height: 28px; width: 60%; margin: 0 auto; border-top:1px solid #000">
+                      <strong>Firma Autorizada</strong></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

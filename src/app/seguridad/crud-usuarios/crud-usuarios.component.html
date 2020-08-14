@@ -1,0 +1,88 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-icon">
+          <div class="card-icon cardHeader">
+            <i class="material-icons">alternate_email</i>
+          </div>
+          <h4 class="card-title">{{titulo}}</h4>
+        </div>
+        <form name="CrudUsuarioInForm" #CrudUsuarioInForm="ngForm" novalidate>
+          <div class="card-body" *ngIf="op==0">
+            <div class="row">
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Personal:" name="params.empleado"
+                  #params.empleado="ngModel" [(ngModel)]="params.idEmpleado" id="params.empleado"
+                  (selectionChange)="getEmpleado(listaOpciones.value)" required>
+                  <mat-option *ngFor="let el of personal" [value]="el.idEmpleado">
+                    {{el.noNombre}} {{el.noApellido}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaRoles placeholder="Seleccione Rol:" name="params.roles" #params.roles="ngModel"
+                  [(ngModel)]="params.idRol" id="params.roles" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let a of roles" [value]="a.idRol">
+                    {{a.nombreRol}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Email:" name="email" #email="ngModel" [(ngModel)]="params.correo" required
+                  ngvemail>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <div class="category form-category col-12">* Campos requeridos</div>
+            </div>
+          </div>
+
+          <div class="card-body" *ngIf="userList.length!=0">
+            <div class="row">
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Personal:" [(ngModel)]="userList[0].empleado" name="empleado" readonly>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Usuario:" [(ngModel)]="userList[0].idUsuario" name="user" readonly>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Rol Actual:" [(ngModel)]="userList[0].noRol" name="rol" readonly>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <mat-select #listaRoles placeholder="Seleccione Rol:" name="params.roles" #params.roles="ngModel"
+                  [(ngModel)]="params.idRol" id="params.roles" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let a of roles" [value]="a.idRol">
+                    {{a.nombreRol}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <div class="category form-category col-12">* Campos requeridos</div>
+            </div>
+          </div>
+        </form>
+        <div class="col-sm-12 text-right ">
+          <button mat-raised-button="" *ngIf="op==0" [disabled]="isInvalid(CrudUsuarioInForm)" (click)="registrar()"
+            type="button" class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Registrar"
+            [matTooltipPosition]="'above'"></button>
+          <button mat-raised-button="" *ngIf="op!=0" [disabled]="isInvalid(CrudUsuarioInForm)" (click)="actualizar()"
+            type="button" class="btn btn-fill actualizar btn-sm btn-primary" matTooltip="Modificar"
+            [matTooltipPosition]="'above'"></button>
+          &nbsp;<button mat-raised-button="" [routerLink]="['/seguridad']" type="button"
+            class="btn btn-fill cerrar btn-sm btn-primary" matTooltip="Regresar" [matTooltipPosition]="'above'">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>

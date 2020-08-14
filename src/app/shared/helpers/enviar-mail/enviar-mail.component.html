@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-header card-header-icon">
+    <div class="card-icon cardHeader">
+      <i class="material-icons">email</i>
+    </div>
+    <h4 class="card-title">Enviar Email
+      <button mat-icon-button class="close" (click)="close()">
+        <i class="material-icons">close</i> </button>
+    </h4>
+  </div>
+  <form name="CrudEmail" #CrudEmail="ngForm" novalidate>
+    <div class="card-body">
+      <div class="row">
+        <mat-form-field class="col-12">
+          <input matInput type="text" placeholder="Email:" [(ngModel)]="params.email" name="email" #email="ngModel"
+            type="email" ngvemail required>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+  <div class="text-center">
+    <button mat-raised-button="" (click)="contactForm()" [disabled]="isInvalid(CrudEmail)" type="button"
+      class="btn btn-fill email btn-sm btn-primary" matTooltip="Enviar">
+      <i class="material-icons">email</i>
+    </button>
+    &nbsp;<button mat-raised-button="" (click)="close()" type="button" class="btn btn-fill cerrar btn-sm btn-primary"
+      matTooltip="Cerrar">
+      <i class="material-icons">close</i>
+    </button>
+    <br>
+  </div>
+  <br>
+</div>

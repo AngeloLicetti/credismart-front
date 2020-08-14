@@ -1,0 +1,200 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-icon">
+          <div class="card-icon cardHeader">
+            <i class="material-icons">contacts</i>
+          </div>
+          <h4 class="card-title">{{titulo}}</h4>
+        </div>
+        <form name="CrudClienteForm" #CrudClienteForm="ngForm" novalidate>
+          <div class="card-body">
+            <div class="row">
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Tipo de Documento " name="params.idTipoDocide"
+                  #params.idTipoDocide="ngModel" [(ngModel)]="params.idTipoDocide" id="params.idTipoDocide"
+                  (selectionChange)="changeInput(listaOpciones.value)" required>
+                  <mat-option *ngFor="let tp of tipoDoc" [value]="tp.idTipoDocumento">
+                    {{tp.nombreTipoDocumento}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Número de Documento :" [(ngModel)]="params.nuDocide"
+                  [minlength]="longitudDocumento" [maxlength]="longitudDocumento" name="nuDocide" #nuDocide="ngModel"
+                  (keypress)="setInputPattern($event, 'positiveDigits')"
+                  [pattern]="setValidatorPattern('positiveDigits', setQuantifier('+'), true, true)" required>
+                <mat-error>
+                  Número de Documento es requerido
+                </mat-error>
+                <mat-hint align="end" class="longitudInforme">
+                  {{ params.nuDocide.length? params.nuDocide.length: '0' }} /
+                  {{longitudDocumento?longitudDocumento:'?'}}
+                </mat-hint>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Cliente :" [(ngModel)]="params.noCliente" name="params.noCliente"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')" maxlength="40"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  #params.noCliente="ngModel" required>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4" *ngIf="params.idTipoDocide==1 || params.idTipoDocide==2">
+                <input matInput type="text" [matDatepicker]="dp" placeholder="Fecha de Nacimiento:"
+                  [(ngModel)]="params.feNacimiento"  name="feNacimiento" #feNacimiento="ngModel"  required>
+                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                <mat-datepicker #dp disabled="false"></mat-datepicker>
+                <!-- <input matInput placeholder="Fecha de Nacimiento:" [(ngModel)]="params.feNacimiento" type="date"
+                  name="feNacimiento" #feNacimiento="ngModel" required> -->
+              </mat-form-field>
+              <mat-form-field class="col-sm-4" *ngIf="params.idTipoDocide==1 || params.idTipoDocide==2">
+                <mat-select #listaOpciones placeholder="Seleccione Sexo" name="params.idSexo" #params.idSexo="ngModel"
+                  [(ngModel)]="params.idSexo" id="params.idSexo" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let a of sexoList" [value]="a.idSexo">
+                    {{a.descripcionSexo}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4" *ngIf="params.idTipoDocide==1 || params.idTipoDocide==2">
+                <mat-select #listaOpciones placeholder="Seleccione Estado Civil" name="params.idEstadoCivil"
+                  #params.idEstadoCivil="ngModel" [(ngModel)]="params.idEstadoCivil" id="params.idEstadoCivil" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let e of estadoList" [value]="e.idEstadoCivil">
+                    {{e.descripcionEstadoCivil}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Teléfono:" [(ngModel)]="params.nuTelefono" minlength="7" maxlength="9"
+                  name="nuTelefono" #nuTelefono="ngModel" (keypress)="setInputPattern($event, 'cellPhone')"
+                  [pattern]="setValidatorPattern('cellPhone', setQuantifier('+'), true, true)">
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Celular 1:" [(ngModel)]="params.nuCelular" minlength="9" maxlength="9"
+                  name="nuCelular" #nuCelular="ngModel" (keypress)="setInputPattern($event, 'cellPhone')"
+                  [pattern]="setValidatorPattern('cellPhone', setQuantifier('+'), true, true)" required>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Celular 2:" [(ngModel)]="params.nuCelular2" minlength="9" maxlength="9"
+                  name="nuCelular2" #nuCelular2="ngModel" (keypress)="setInputPattern($event, 'cellPhone')"
+                  [pattern]="setValidatorPattern('cellPhone', setQuantifier('+'), true, true)">
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Departamento " name="params.idDepartamento"
+                  #params.idDepartamento="ngModel" [(ngModel)]="params.idDepartamento" id="params.idDepartamento"
+                  (ngModelChange)="getProvincias()" required>
+                  <mat-option *ngFor="let de of departamentos" [value]="de.idDepartamento">
+                    {{de.departamento}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Provincia " name="params.idProvincia"
+                  #params.idProvincia="ngModel" [(ngModel)]="params.idProvincia" id="params.idProvincia"
+                  (ngModelChange)="getDistritos()" required>
+                  <mat-option *ngFor="let pr of provincias" [value]="pr.idProvincia">
+                    {{pr.provincia}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Distrito" name="params.idDistrito"
+                  #params.idDistrito="ngModel" [(ngModel)]="params.idDistrito" id="params.idDistrito" required>
+                  <mat-option *ngFor="let dis of distritos" [value]="dis.idDistrito">
+                    {{dis.distrito}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <textarea matInput placeholder="Dirección:" [(ngModel)]="params.noDireccion"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  name="params.noDireccion" #params.noDireccion="ngModel" matTextareaAutosize matAutosizeMinRows="2"
+                  matAutosizeMaxRows="3" required></textarea>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <textarea matInput placeholder="Referencia:" [(ngModel)]="params.noReferencia"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetra')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetra', setQuantifier('+'), true, true)"
+                  name="params.noReferencia" #params.noReferencia="ngModel" matTextareaAutosize matAutosizeMinRows="2"
+                  matAutosizeMaxRows="3"></textarea>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <textarea matInput placeholder="Ocupación / Rubro:" [(ngModel)]="params.noOcupacion"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  name="params.noOcupacion" #params.noOcupacion="ngModel" matTextareaAutosize matAutosizeMinRows="2"
+                  matAutosizeMaxRows="3" required></textarea>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Email:" name="email" #email="ngModel" [(ngModel)]="params.noEmail"
+                  ngvemail>
+                <mat-error>
+                  Email inválido
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Cobrador" name="params.idEmpleado"
+                  #params.idEstadoCivil="ngModel" [(ngModel)]="params.idEmpleado" id="params.idEmpleado" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let e of empleadoList" [value]="e.idEmpleado">
+                    {{e.noDescripcion}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <div class="category form-category col-12">* Campos requeridos</div>
+            </div>
+          </div>
+        </form>
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3 text-left">
+              <button mat-raised-button="" *ngIf="op!=0 && params.noEmail!=null" [disabled]="isInvalid(CrudClienteForm)"
+                (click)="registrarUsuario()" type="button" class="btn btn-fill usuario btn-sm btn-primary"
+                matTooltip="Crear Usuario" [matTooltipPosition]="'right'"></button>
+            </div>
+            <div class="col-sm-9 text-right">
+              <button mat-raised-button="" *ngIf="op==0" [disabled]="isInvalid(CrudClienteForm)" (click)="registrar()"
+                type="button" class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Registrar"
+                [matTooltipPosition]="'above'"></button>
+              <button mat-raised-button="" *ngIf="op!=0" [disabled]="isInvalid(CrudClienteForm)" (click)="actualizar()"
+                type="button" class="btn btn-fill actualizar btn-sm btn-primary" matTooltip="Modificar"
+                [matTooltipPosition]="'above'"></button>
+              &nbsp;<button mat-raised-button="" [routerLink]="['/clientes']" type="button"
+                class="btn btn-fill cerrar btn-sm btn-primary" matTooltip="Regresar" [matTooltipPosition]="'above'">
+                <i class="material-icons">close</i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>

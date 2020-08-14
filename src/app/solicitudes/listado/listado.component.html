@@ -1,0 +1,64 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="card ">
+      <div class="card-header  card-header-icon">
+        <div class="card-icon cardHeader">
+          <i class="material-icons">search</i>
+        </div>
+      </div>
+      <div class="card-body ">
+        <div class="col-sm-12">
+          <div class="row">
+            <mat-form-field class="col-6">
+              <input matInput placeholder="Nombre del Solicitante" [(ngModel)]="params.noSolicitante"
+                [disabled]="disabledN" (input)="busqueda($event.target.value)" matTooltip="Mínimo 3 caracteres"
+                [matTooltipPosition]="'above'" (keypress)="setInputPattern($event, 'letters')"
+                [pattern]="setValidatorPattern('letters', setQuantifier('+'), true, true)">
+            </mat-form-field>
+            <mat-form-field class="col-6 ">
+              <input matInput placeholder="Número de Documento" [(ngModel)]="params.nuDocideSolicitante" [disabled]="disabledD"
+                (input)="busquedaDNI($event.target.value)" matTooltip="Ingrese Nro. de Documento" minlength="8" maxlength="12"
+                [matTooltipPosition]="'above'" (keypress)="setInputPattern($event, 'positiveDigits')"
+                [pattern]="setValidatorPattern('positiveDigits', setQuantifier('+'), true, true)">
+            </mat-form-field>
+          </div>
+          <div class="row">
+            <div class="col-12  text-right">
+              <button mat-raised-button="" (click)="clear()" type="button" class="btn btn-fill clear btn-sm btn-primary"
+              matTooltip="Limpiar" [matTooltipPosition]="'left'"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="col-12 text-right">
+          <button mat-raised-button="" [routerLink]="['crudsolicitudes',  '0']"  type="button" class="btn btn-fill search btn-sm btn-primary" matTooltip="Agregar"  [matTooltipPosition]="'left'">
+            <i class="material-icons">clear_all</i>
+          </button>
+        </div>
+        <br>
+        <div class="material-datatables table-responsive">
+          <table id="dtResultado" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
+            style="width:100%">
+            <thead class="cabeceraTable">
+              <tr>
+                <!-- <th class="text-center" >Aprobar</th>
+                <th class="text-center" >Rechazar</th> -->
+                <th class="text-center">Solicitante</th>
+                <th class="text-center">N° DNI</th>
+                <th class="text-center">Celular</th>
+                <th>Monto</th>
+                <th>Interes</th>
+                <th class="text-center">Tipo Préstamo</th>
+                <th class="text-center">Cuota</th>
+                <th class="text-center">Acción</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

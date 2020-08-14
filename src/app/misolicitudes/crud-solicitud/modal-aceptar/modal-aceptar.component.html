@@ -1,0 +1,62 @@
+<div class="card">
+  <div class="card-header card-header-icon">
+    <div class="card-icon cardHeader">
+      <i class="material-icons">email</i>
+    </div>
+    <h4 class="card-title">Datos para el préstamo
+      <button mat-icon-button class="close" (click)="close()">
+        <i class="material-icons">close</i> </button>
+    </h4>
+  </div>
+  <form name="CrudEmail" #CrudEmail="ngForm" novalidate>
+    <div class="card-body">
+        <h5 class="col-sm-12 text-left ">Entrega de Préstamo</h5>
+        <mat-radio-group name="tipo.idTipo" [(ngModel)]="tipo.idTipo" style="padding-left: 5%;
+        padding-right: 5%;" required>
+          <mat-radio-button value="1" style="font-weight: bold;padding-right: 2%">Efectivo</mat-radio-button>
+          <mat-radio-button value="2" style="font-weight: bold;">Transferencia</mat-radio-button>
+        </mat-radio-group>
+        <div class="row">
+          <mat-form-field class="col-sm-12" *ngIf="tipo.idTipo==2">
+            <input matInput placeholder="Nombre:" [(ngModel)]="params.titular" name="params.noCliente"
+              (keypress)="setInputPattern($event, 'soloUnEspacioLetra')"
+              [pattern]="setValidatorPattern('soloUnEspacioLetra', setQuantifier('+'), true, true)"
+              #params.noCliente="ngModel" required>
+            <mat-error>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="col-sm-12" *ngIf="tipo.idTipo==2">
+            <mat-select #listaOpciones placeholder="Seleccione Banco" name="params.idBanco" #params.idBanco="ngModel"
+              [(ngModel)]="params.banco" id="params.idBanco" required>
+              <mat-option>--</mat-option>
+              <mat-option *ngFor="let banco of bancoList" [value]="banco.noBanco">
+                {{banco.noBanco}}
+              </mat-option>
+            </mat-select>
+            <mat-error>
+            </mat-error>
+          </mat-form-field> 
+          <mat-form-field class="col-sm-12" *ngIf="tipo.idTipo==2">
+            <input matInput placeholder="Cuenta Bancaria:" [(ngModel)]="params.cuenta" minlength="16" maxlength="16"
+              name="params.cuentaBancaria" #params.cuentaBancaria="ngModel"
+              (keypress)="setInputPattern($event, 'cuentaBancaria')"
+              [pattern]="setValidatorPattern('cuentaBancaria', setQuantifier('+'), true, true)" required>
+            <mat-error>
+            </mat-error>
+          </mat-form-field>
+        </div>
+    </div>
+  </form>
+  <div class="text-center">
+    <button mat-raised-button="" [disabled]="isInvalid(CrudEmail)" type="button" (click)="accionSolicitud()"
+      class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Enviar">
+      <i class="material-icons">email</i>
+    </button>
+    &nbsp;<button mat-raised-button="" (click)="close()" type="button" class="btn btn-fill cerrar btn-sm btn-primary"
+      matTooltip="Cerrar">
+      <i class="material-icons">close</i>
+    </button>
+    <br>
+  </div>
+  <br>
+</div>

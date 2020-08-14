@@ -1,0 +1,86 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="card ">
+      <div class="card-header  card-header-icon">
+        <div class="card-icon cardHeader">
+          <i class="material-icons">search</i>
+        </div>
+      </div>
+      <div class="card-body ">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="Nombre del Empleado" [(ngModel)]="params.nombre" [disabled]="disabledN"
+                  (input)="busqueda($event.target.value)" matTooltip="Mínimo 2 caracteres"
+                  [matTooltipPosition]="'above'" (keypress)="setInputPattern($event, 'letters')"
+                  [pattern]="setValidatorPattern('letters', setQuantifier('+'), true, true)">
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="N° DNI" [(ngModel)]="params.docide" [disabled]="disabledD" maxlength="8"
+                  (input)="busquedaDNI($event.target.value)" matTooltip="Escriba todo el número de DNI"
+                  [matTooltipPosition]="'above'" (keypress)="setInputPattern($event, 'positiveDigits')"
+                  [pattern]="setValidatorPattern('positiveDigits', setQuantifier('+'), true, true)">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12  text-right">
+            <button mat-raised-button="" (click)="clear()" type="button" class="btn btn-fill clear btn-sm btn-primary"
+              matTooltip="Limpiar" [matTooltipPosition]="'left'">
+              <i class="material-icons">clear_all</i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 text-right">
+      <button mat-raised-button="" [routerLink]="['crudpersonal',  '0']" type="button"
+        class="btn btn-fill search btn-sm btn-primary" matTooltip="Agregar" [matTooltipPosition]="'left'">
+        <i class="material-icons">add</i>
+      </button>
+    </div>
+    <br>
+    <div class="row" *ngIf="show==1">
+      <div class="col-md-3" *ngFor="let element of empleadoList">
+        <br>
+        <div class="card card-product">
+          <div class="card-header card-header-image" data-header-animation="true">
+            <img class="img" style="height: 300px;" alt="Responsive image"
+              src="{{element.foto ? element.foto : 'assets/img/credismart/avatar.png'}}">
+          </div>
+          <div class="card-body">
+            <div class="card-actions text-center">
+              <button mat-raised-button type="button" class="btn-simple btn-info edit btn-icon" matTooltip="Editar"
+                [matTooltipPosition]="'below'" [routerLink]="['crudpersonal', element.idEmpleado ]">
+                <i class="material-icons">edit</i>
+              </button>
+              <!-- <button mat-raised-button type="button" class="btn-simple btn-info delete btn-icon" matTooltip="Eliminar"
+                [matTooltipPosition]="'below'" (click)="deleteEmpleado(element)">
+                <i class="material-icons">delete</i>
+              </button> -->
+            </div>
+            <h4 class="card-title">
+              {{ element.noNombre }} {{ element.noApellido }}
+            </h4>
+            <div class=" card-description" *ngIf="element.nuCelular">
+              Teléfono: {{ element.nuCelular }}
+            </div>
+            <div class="card-description" *ngIf="element.noDireccion">
+              Dirección: {{ element.noDireccion }}
+            </div>
+            <div class="col-sm-12 text-center" style="margin-top: 3%;">
+              <mat-slide-toggle [(ngModel)]="element.isChecked" (change)="toggle($event,element)"></mat-slide-toggle>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<block-ui>
+  <!-- Your app markup here -->
+</block-ui>

@@ -1,0 +1,124 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-icon">
+          <div class="card-icon cardHeader">
+            <i class="material-icons">announcement</i>
+          </div>
+          <h4 class="card-title">{{titulo}}</h4>
+        </div>
+        <div class="form-row" style="margin-right: 5px;">
+          <div class="col-sm-12 text-right">
+            <button mat-raised-button class="btn btn-danger btn-link" *ngIf="op==0" (click)="agregarAval()">Agregar
+              Aval</button>
+          </div>
+        </div>
+        <form name="CrudSolicitudForm" #CrudSolicitudForm="ngForm" novalidate>
+          <div class="card-body">
+            <div class="row">
+              <mat-form-field class="col-sm-6">
+                <mat-select #listaOpciones placeholder="Seleccione Tipo Préstamo"
+                  name="params.solicitud.tipoPrestamo.idTipoPrestamo"
+                  #params.solicitud.tipoPrestamo.idTipoPrestamo="ngModel"
+                  [(ngModel)]="params.solicitud.tipoPrestamo.idTipoPrestamo"
+                  id="params.solicitud.tipoPrestamo.idTipoPrestamo" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let el of listTiposPrestamos" [value]="el.idTipoPrestamo">
+                    {{el.noTipo}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Monto:" [(ngModel)]="params.solicitud.monto" name="montoTotal"
+                  #montoTotal="ngModel" (keypress)="setInputPattern($event, 'realPrices')"
+                  [pattern]="setValidatorPattern('realPrices', setQuantifier('+'), true, true)" required>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="N° Cuotas:" [(ngModel)]="params.solicitud.nuCuota" name="cuotas"
+                  #cuotas="ngModel" minlength="1" maxlength="2" (keypress)="setInputPattern($event, 'positiveDigits')"
+                  [pattern]="setValidatorPattern('digitos', setQuantifier('+'), true, true)" required>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Fecha de Inicio:" [(ngModel)]="params.solicitud.feInicio" type="date"
+                  name="params.solicitud.feInicio" #params.solicitud.feInicio="ngModel" (change)="fechaActual()"
+                  required>
+              </mat-form-field>
+              <mat-form-field class="col-sm-12">
+                <textarea matInput placeholder="Comentario:" [(ngModel)]="params.solicitud.comentario"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  name="params.solicitud.comentario" #params.solicitud.comentario="ngModel" matTextareaAutosize
+                  matAutosizeMinRows="2" matAutosizeMaxRows="3" required></textarea>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <span class="col-12 border-top my-3 before" *ngIf="showAval==1"></span>
+              <mat-form-field *ngIf="showAval==1" class="col-6">
+                <input matInput placeholder="Aval:" [(ngModel)]="params.solicitud.noReferencia"
+                  name="params.solicitud.noReferencia" (keypress)="setInputPattern($event, 'soloUnEspacioLetra')"
+                  [pattern]="setValidatorPattern('soloUnEspacioLetra', setQuantifier('+'), true, true)"
+                  #params.solicitud.noReferencia="ngModel" required>
+              </mat-form-field>
+              <mat-form-field *ngIf="showAval==1" class="col-6">
+                <input matInput placeholder="N° DNI del Aval:" [(ngModel)]="params.solicitud.nuReferencia" minlength="8"
+                  maxlength="8" name="params.solicitud.nuReferencia" #params.solicitud.nuReferencia="ngModel"
+                  (keypress)="setInputPattern($event, 'positiveDigits')"
+                  [pattern]="setValidatorPattern('positiveDigits', setQuantifier('+'), true, true)" required>
+              </mat-form-field>
+              <div class="category form-category col-12">* Campos requeridos</div>
+            </div>
+          </div>
+        </form>
+        <div class="card-body" *ngIf="listPagos.length>0">
+          <h4 class="card-title">Proforma</h4>
+          <div class="material-datatables table-responsive">
+            <table id="dtResultado" class="table table-striped table-no-bordered table-hover" cellspacing="0"
+              width="100%" style="width:100%">
+              <thead class="cabeceraTable">
+                <tr>
+                  <th class="text-center">N° Cuota</th>
+                  <th class="text-center">Fecha de Cuota</th>
+                  <th class="text-center">Cuota</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let element of listPagos; let i = index">
+                  <td class="text-center">{{i+1}} </td>
+                  <td class="text-center">{{element.fecha_cuota | date:'dd-MM-yyyy'}}</td>
+                  <td class="text-center" style="font-weight: bold;">{{element.cuota  | currency: 'S/'}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <h5 class="col-auto"> <strong> Interés + Capital: </strong> {{total | currency: 'S/'}}</h5>
+            <br>
+          </div>
+        </div>
+        <div class="col-sm-12 text-right">
+          <button mat-raised-button="" (click)="confirmar()" type="button" *ngIf="op!=0"
+            class="btn btn-fill pagare btn-sm btn-primary" matTooltip="Confirmar"
+            [matTooltipPosition]="'above'"></button>
+          <button mat-raised-button="" *ngIf="op==0" [disabled]="isInvalid(CrudSolicitudForm)" (click)="registrar()"
+            type="button" class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Registrar"
+            [matTooltipPosition]="'above'"></button>
+          &nbsp;<button mat-raised-button="" type="button" (click)="desaprobarSolicitud()"
+            class="btn btn-fill cerrar btn-sm btn-primary" *ngIf="op!=0" matTooltip="Rechazar"
+            [matTooltipPosition]="'above'">
+            <i class="material-icons">close</i>
+          </button>
+          <button mat-raised-button="" *ngIf="op==0" [routerLink]="['/misolicitudes']" type="button"
+            class="btn btn-fill cerrar btn-sm btn-primary" matTooltip="Regresar" [matTooltipPosition]="'above'">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>

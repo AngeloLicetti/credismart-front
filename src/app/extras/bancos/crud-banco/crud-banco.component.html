@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title"><strong>{{titulo}}</strong>
+      <button mat-icon-button class="close" (click)="close()">
+        <i class="material-icons">close</i> </button>
+    </h3>
+  </div>
+  <div class="card-body">
+    <form name="CrudBancoForm" #CrudBancoForm="ngForm" novalidate>
+      <mat-form-field class="col-12">
+        <input matInput placeholder="Nombre del Banco:" [(ngModel)]="params.nombreBanco" name="params.nombreBanco"
+          (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetra')"
+          [pattern]="setValidatorPattern('soloUnEspacioNumeroLetra', setQuantifier('+'), true, true)"
+          #params.nombreBanco="ngModel" required>
+        <mat-error>
+        </mat-error>
+      </mat-form-field>
+      <div class="col-12 text-center ">
+        <button mat-raised-button="" *ngIf="op==0" [disabled]="isInvalid(CrudBancoForm)" (click)="registrar()"
+          type="button" class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Registrar"></button>
+        <button mat-raised-button="" *ngIf="op!=0" [disabled]="isInvalid(CrudBancoForm)" (click)="actualizar()"
+          type="button" class="btn btn-fill actualizar btn-sm btn-primary" matTooltip="Modificar"></button>
+          &nbsp;<button mat-raised-button="" (click)="close()" type="button" class="btn btn-fill cerrar btn-sm btn-primary"
+          matTooltip="Cerrar">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~ngx-toastr/toastr.css';
+.extrasDas {
+    background: fixed;
+    font-family: cursive;
+}
+
+.cabeceraTable {
+    background: #318cdc;
+    color: aliceblue;
+    font-family: sans-serif;
+}
+
+.cardHeader {
+    background: #318cdc !important;
+}
+
+.bntAgregar {
+    background: #318cdc !important;
+}
+
+.cdk-global-overlay-wrapper {
+    z-index: 1000;
+}
+
+.montoAux {
+    margin-left: -68px;
+    margin-top: 8px;
+}
+
+.card-columns {
+    column-count: 5 !important;
+}
+
+textarea {
+    resize: none;
+}
+
+.mat-financiera {
+    height: 250px;
+}
+
+.login-name{
+    font-family: auto;
+    font-size: 24px !important;
+    color: #1d5ea0;
+    text-align: center !important;
+}
+.responsive {
+    width: 100%;
+    height: auto;
+  }
+
+.principal-menu{
+    font-family: auto;
+    font-size: 52px !important;
+    color: white !important;
+    text-align: center !important;
+    margin-left: -15px;
+}
+
+.secundario-menu{
+    font-family: auto;
+    font-size: 34px !important;
+    color: white !important;
+    text-align: center !important;
+}
+
+.tercero-menu{
+    font-family: auto;
+    font-size: 30px !important;
+    color: white !important;
+    text-align: center !important;
+}

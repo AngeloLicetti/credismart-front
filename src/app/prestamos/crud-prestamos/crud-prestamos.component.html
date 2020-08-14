@@ -1,0 +1,196 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-icon">
+          <div class="card-icon cardHeader">
+            <i class="material-icons">attach_money</i>
+          </div>
+          <h4 class="card-title">{{titulo}}</h4>
+        </div>
+        <div class="form-row" style="margin-right: 5px;">
+          <div class="col-12 text-right">
+            <button mat-raised-button class="btn btn-danger btn-link" *ngIf="op>0"
+              (click)="tarjeta(params.prestamo)">Tarjeta de Control</button>
+            <!-- <button mat-raised-button class="btn btn-danger btn-link" *ngIf="params.prestamo.idCaja==null && op>0"
+              (click)="cancelar(params.prestamo)">Cancelar Préstamo</button> -->
+            <button mat-raised-button class="btn btn-danger btn-link" (click)="agregarAval()">Agregar Codeudor</button>
+          </div>
+        </div>
+        <form name="CrudPrestamosForm" #CrudPrestamosForm="ngForm" novalidate>
+          <div class="card-body">
+            <div class="row">
+              <mat-form-field class="col-sm-4">
+                <input matInput type="text" [matAutocomplete]="auto" placeholder="Cliente"
+                  (input)="busqueda($event.target.value)" [(ngModel)]="params.prestamo.noCliente" [disabled]="disable"
+                  matTooltip="Mínimo 2 caracteres" name="params.prestamo.noCliente" #params.prestamo.noCliente="ngModel"
+                  required>
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <strong>Seleccionar Cliente</strong>
+                  <mat-option (onSelectionChange)="selectCliente(lm)" *ngFor="let lm of listTClientes"
+                    [value]="lm.noCliente">
+                    <span>{{ lm.noCliente}}</span>
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Referencia:" [(ngModel)]="params.prestamo.noReferencia"
+                  name="params.prestamo.noReferencia" (keypress)="setInputPattern($event, 'soloUnEspacioLetra')"
+                  [pattern]="setValidatorPattern('soloUnEspacioLetra', setQuantifier('+'), true, true)"
+                  #params.prestamo.noReferencia="ngModel">
+              </mat-form-field>
+              <mat-form-field class="col-sm-4 ">
+                <mat-select #listaOpciones placeholder="Seleccione Lugar" name="params.prestamo.idLugar"
+                  #params.prestamo.idLugar="ngModel" [(ngModel)]="params.prestamo.idLugar" id="params.prestamo.idLugar">
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let el of listLugares" [value]="el.idLugar">
+                    {{el.nombreLugar}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4 ">
+                <mat-select #listaOpciones placeholder="Seleccione Tipo Préstamo"
+                  name="params.prestamo.tipoPrestamo.idTipoPrestamo"
+                  #params.prestamo.tipoPrestamo.idTipoPrestamo="ngModel"
+                  [(ngModel)]="params.prestamo.tipoPrestamo.idTipoPrestamo"
+                  id="params.prestamo.tipoPrestamo.idTipoPrestamo" (ngModelChange)="nuevo()" required>
+                  <mat-option *ngFor="let el of listTiposPrestamos" [value]="el.idTipoPrestamo">
+                    {{el.noTipo}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Monto:" [(ngModel)]="params.prestamo.monto" name="montoTotal"
+                  #montoTotal="ngModel" [readonly]="disable" (keypress)="setInputPattern($event, 'realPrices')"
+                  (input)="calcular($event.target.value)" minlength="3" maxlength="8"
+                  [pattern]="setValidatorPattern('realPrices', setQuantifier('+'), true, true)" required>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4 ">
+                <mat-select #listaOpciones placeholder="Seleccione Caja" name="params.prestamo.aperturaCaja"
+                  #params.prestamo.aperturaCaja="ngModel" [(ngModel)]="params.prestamo.aperturaCaja" id="params.prestamo.aperturaCaja"
+                  (ngModelChange)="getMonto()" required>
+                  <mat-option *ngFor="let ele of listCajas" [value]="ele.idCaja">
+                    {{ele.descripcionCaja}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Interes:" [(ngModel)]="params.prestamo.interes2" min="1"
+                  name="params.prestamo.interes" #params.prestamo.interes="ngModel"
+                  (keypress)="setInputPattern($event, 'realPrices')" (input)="calcular($event.target.value);"
+                  pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$" required>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="N° Cuotas:" [(ngModel)]="params.prestamo.nuCuotas" name="Cuotas"
+                  #Cuotas="ngModel" minlength="1" maxlength="2" (keypress)="setInputPattern($event, 'positiveDigits')"
+                  (input)="calcular($event.target.value);" [pattern]="setValidatorPattern('digitos', true, true)"
+                  required>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput type="text" [matDatepicker]="dp" name="params.prestamo.feInicio"
+                  #params.prestamo.feInicio="ngModel" [(ngModel)]="params.prestamo.feInicio"
+                  placeholder="Fecha de Inicio:" (dateChange)="fechaActual()" required>
+                <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                <mat-datepicker #dp disabled="false"></mat-datepicker>
+                <!-- <input matInput placeholder="Fecha de Inicio:" [(ngModel)]="params.prestamo.feInicio" type="date"
+                  name="params.prestamo.feInicio" #params.prestamo.feInicio="ngModel" (change)="nuevo();fechaActual()"
+                  required> -->
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Cuota:" [(ngModel)]="params.prestamo.cuota" name="params.prestamo.cuota"
+                  #params.prestamo.cuota="ngModel" readonly required>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Fecha del Primer Pago:" [(ngModel)]="params.prestamo.proximoPago"
+                  type="text" name="params.prestamo.proximoPago" #params.prestamo.proximoPago="ngModel" readonly
+                  required>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <textarea matInput placeholder="Comentario:" [(ngModel)]="params.prestamo.comentario"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  name="params.prestamo.comentario" #params.prestamo.comentario="ngModel" matTextareaAutosize
+                  matAutosizeMinRows="2" matAutosizeMaxRows="3"></textarea>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <span class="col-12 border-top my-3 before" *ngIf="showAval"></span>
+              <mat-form-field *ngIf="showAval" class="col-6">
+                <input matInput placeholder="Codeudor:" [(ngModel)]="params.prestamo.noGarante"
+                  name="params.prestamo.noGarante" (keypress)="setInputPattern($event, 'soloUnEspacioLetra')"
+                  [pattern]="setValidatorPattern('soloUnEspacioLetra', setQuantifier('+'), true, true)"
+                  #params.prestamo.noGarante="ngModel" required>
+              </mat-form-field>
+              <mat-form-field *ngIf="showAval" class="col-6">
+                <input matInput placeholder="N° DNI del Codeudor:" [(ngModel)]="params.prestamo.dniGarante"
+                  minlength="8" maxlength="8" name="params.prestamo.dniGarante" #params.prestamo.dniGarante="ngModel"
+                  (keypress)="setInputPattern($event, 'positiveDigits')"
+                  [pattern]="setValidatorPattern('positiveDigits', setQuantifier('+'), true, true)" required>
+              </mat-form-field>
+              <mat-form-field *ngIf="showAval" class="col-sm-4">
+                <input matInput placeholder="Celular:" [(ngModel)]="params.prestamo.nuGarante" minlength="9"
+                  maxlength="9" name="params.prestamo.nuGarante" #params.prestamo.nuGarante="ngModel"
+                  (keypress)="setInputPattern($event, 'cellPhone')"
+                  [pattern]="setValidatorPattern('cellPhone', setQuantifier('+'), true, true)">
+              </mat-form-field>
+              <mat-form-field *ngIf="showAval" class="col-sm-4">
+                <input matInput placeholder="Dirección:" [(ngModel)]="params.prestamo.direccionGarante"
+                  name="params.prestamo.direccionGarante"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  #params.prestamo.direccionGarante="ngModel">
+              </mat-form-field>
+              <mat-form-field *ngIf="showAval" class="col-sm-4">
+                <mat-select placeholder="Parentesco:" [(ngModel)]="params.prestamo.parentesco"
+                  name="params.prestamo.parentesco" #params.prestamo.parentesco="ngModel">
+                  <mat-option value="Amigo">Amigo</mat-option>
+                  <mat-option value="Conyuge">Conyuge</mat-option>
+                  <mat-option value="Cuñado">Cuñado</mat-option>
+                  <mat-option value="Hermano">Hermano</mat-option>
+                  <mat-option value="Madre">Madre</mat-option>
+                  <mat-option value="Padre">Padre</mat-option>
+                  <mat-option value="Primo">Primo</mat-option>
+                  <mat-option value="Tio">Tío</mat-option>
+                  <mat-option value="Vecino">Vecino</mat-option>
+                  <mat-option value="Otro">Otro</mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="category form-category col-sm-12">* Campos requeridos</div>
+        </form>
+        <div class="col-sm-12 text-right ">
+          <button mat-raised-button="" *ngIf="op==0"
+            [disabled]="isInvalid(CrudPrestamosForm) || !params.prestamo.idCaja" (click)="registrar()" type="button"
+            class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Registrar"
+            [matTooltipPosition]="'above'"></button>
+          <button mat-raised-button="" *ngIf="op!=0"
+            [disabled]="isInvalid(CrudPrestamosForm) || !params.prestamo.idCaja" (click)="actualizar()" type="button"
+            class="btn btn-fill actualizar btn-sm btn-primary" matTooltip="Modificar"
+            [matTooltipPosition]="'above'"></button>
+          &nbsp;<button mat-raised-button="" [routerLink]="['/prestamos/listado']" type="button"
+            class="btn btn-fill cerrar btn-sm btn-primary" matTooltip="Regresar" [matTooltipPosition]="'above'">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,85 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="card ">
+      <div class="card-header  card-header-icon">
+        <div class="card-icon cardHeader">
+          <i class="material-icons">assessment</i>
+        </div>
+        <h3 class="card-title">Tarjeta de Control</h3>
+      </div>
+      <div class="card-body ">
+        <div class="col-sm-12">
+          <div class="row">
+            <mat-form-field class="col-sm-4">
+              <input matInput placeholder="Cliente:" [(ngModel)]="cliente" readonly>
+            </mat-form-field>
+            <mat-form-field class="col-sm-4">
+              <input matInput placeholder="Tipo Préstamo:" [(ngModel)]="tipoPres" readonly>
+            </mat-form-field>
+            <mat-form-field class="col-sm-4">
+              <input matInput placeholder="Monto:" [(ngModel)]="monto" readonly>
+            </mat-form-field>
+            <mat-form-field class="col-sm-4">
+              <input matInput placeholder="Interés:" [(ngModel)]="interes" readonly>
+            </mat-form-field>
+            <mat-form-field class="col-sm-4">
+              <input matInput placeholder="Cuota:" [(ngModel)]="cuota" readonly>
+            </mat-form-field>
+            <mat-form-field class="col-sm-4">
+              <input matInput placeholder="Fecha de Inicio:" [(ngModel)]="fechaInicio" readonly>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="material-datatables table-responsive">
+            <br>
+            <table class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
+              style="width:100%">
+              <thead class="cabeceraTable">
+                <tr>
+                  <th class="text-center">N° Cuota</th>
+                  <th class="text-center">Fecha de Cuota</th>
+                  <th class="text-center">Pago</th>
+                  <th class="text-center">Detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let element of listPagos; let i = index">
+                  <td class="text-center">{{i+1}} </td>
+                  <td class="text-center">{{element.fecha_cuota}}</td>
+                  <td class="text-center">
+                    <mat-label *ngIf="element.monto!=null" for="cuota">{{ element.monto | currency: 'S/'}}</mat-label>
+                    <mat-label *ngIf="element.monto==null && element.estado==1" for="cuota">Por pagar</mat-label>
+                    <mat-label *ngIf="element.estado==0" for="fecha" class="badge badge-warning">Cuota Vencida
+                    </mat-label>
+                  </td>
+                  <td class="text-center">
+                    <mat-label *ngIf="element.monto!=null" for="cuota">{{ element.tipoPago.noTipo}} /
+                      {{ element.empleado.noNombre}} / {{ element.fePago}}</mat-label>
+                    <mat-label *ngIf="element.monto==null" for="cuota">Por pagar</mat-label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
+            <div class="justify-content-between">
+              <h4 class="col-auto"> <strong> Interés + Capital: </strong> {{total | currency: 'S/'}}</h4>
+              <h4 class="col-auto"> <strong> Saldo Restante: </strong> {{saldo | currency: 'S/'}}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 text-right">
+        <button mat-raised-button="" *ngIf="total!=saldo" (click)="imprimir()" type="button"
+          class="btn btn-fill printing btn-sm btn-primary" matTooltip="Imprimir" [matTooltipPosition]="'above'">
+          <i class="material-icons">print</i>
+        </button>
+        &nbsp;<button mat-raised-button=""  [routerLink]="['/misprestamos']" type="button"
+        class="btn btn-fill cerrar btn-sm btn-primary" matTooltip="Regresar" [matTooltipPosition]="'above'">
+        <i class="material-icons">close</i>
+      </button>
+      </div>
+      <br>
+    </div>
+  </div>
+</div>

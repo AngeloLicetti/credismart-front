@@ -1,0 +1,126 @@
+<div class="card">
+  <div class="card-header card-header-icon">
+    <div class="card-icon cardHeader">
+      <i class="material-icons">local_atm</i>
+    </div>
+    <h4 class="card-title">Detalle de Pago
+      <button mat-icon-button class="close" (click)="close()">
+        <i class="material-icons">close</i> </button>
+    </h4>
+  </div>
+  <div class="card-body">
+    <form *ngIf="showDetalle==0" name="CrudPagoForm" #CrudPagoForm="ngForm" novalidate>
+      <h5 class="col-5">Monto a Pagar:</h5>
+      <div class="row">
+        <mat-radio-group name="opcionCuotasPS" [(ngModel)]="opcionCuotas" (change)="verMonto($event.value)">
+          <mat-radio-button class="col-6" value="cuota">{{idPago.length?idPago.length:1}} Cuota(s) :
+            {{(e.cuota * (idPago.length?idPago.length:1))| currency: 'S/'}}</mat-radio-button>
+          <br>
+          <mat-radio-button value="otra">Otro Monto:</mat-radio-button>
+        </mat-radio-group>
+        <mat-form-field *ngIf="monto==1" class="col-4 montoAux">
+          <input matInput name="params.prestamo.monto" [(ngModel)]="params.prestamo.monto" min="2"
+            (keypress)="setInputPattern($event, 'prices')" name="params.prestamo.monto" #params.prestamo.monto="ngModel"
+            (input)="sumar()" [pattern]="setValidatorPattern('prices', setQuantifier('+'), true, true)" required>
+          <mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <mat-form-field class="col-4">
+        <input matInput placeholder="Mora" name="params.prestamo.mora" [(ngModel)]="params.prestamo.mora"
+          (keypress)="setInputPattern($event, 'prices')" (input)="sumarMora($event.target)"
+          [pattern]="setValidatorPattern('prices', setQuantifier('+'), true, true)">
+        <mat-error>
+        </mat-error>
+      </mat-form-field>
+      <h5 *ngIf="showTotal==1" class="col-12 text-right alinear33">Total a
+        Pagar: {{totalPagar| currency: 'S/'}}</h5>
+      <br>
+      <h5 class="col-12 text-left alinear33">Modalidad Pago</h5>
+      <mat-radio-group name="tipo.idTipo" [(ngModel)]="tipo.idTipo" (change)="verTipoPago($event.value)" required>
+        <mat-radio-button class="col-6" value="1">Efectivo</mat-radio-button>
+        <mat-radio-button value="2">Transferencia</mat-radio-button>
+      </mat-radio-group>
+      <br>
+      <div class="row" *ngIf="showBanco==1">
+        <mat-form-field class="col-6">
+          <mat-select #listaOpciones placeholder="Seleccione Banco" name="params.prestamo.idBanco"
+            #params.prestamo.idBanco="ngModel" [(ngModel)]="params.prestamo.idBanco" id="params.prestamo.idBanco"
+            required>
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let e of listBancos" [value]="e.idBanco">
+              {{e.noBanco}}
+            </mat-option>
+          </mat-select>
+          <mat-error>
+            <app-validators-messages [controlVar]="params.prestamo.idBanco" labelName="params.prestamo.idBanco">
+            </app-validators-messages>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-6">
+          <input matInput placeholder="Descripción:" [(ngModel)]="params.prestamo.comentarioDeposito"
+            name="params.prestamo.comentarioDeposito" (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetra')"
+            [pattern]="setValidatorPattern('soloUnEspacioNumeroLetra', setQuantifier('+'), true, true)"
+            #params.prestamo.comentarioDeposito="ngModel">
+          <mat-error>
+            <app-validators-messages [controlVar]="params.prestamo.comentarioDeposito" labelName="Ocupación">
+            </app-validators-messages>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <br> <br>
+        <mat-form-field class="col-12">
+          <mat-select #listaOpciones placeholder="Seleccione Caja" name="params.prestamo.idCaja"
+            #params.prestamo.idCaja="ngModel" [(ngModel)]="params.prestamo.idCaja" id="params.prestamo.idCaja" required>
+            <!-- <mat-option value="-1">Ninguna</mat-option> -->
+            <mat-option *ngFor="let ele of listCajas" [value]="ele.idAperturaCaja">
+              {{ele.descripcionCaja}}
+            </mat-option>
+          </mat-select>
+          <mat-error>
+            <app-validators-messages [controlVar]="params.prestamo.idCaja" labelName="params.prestamo.idCaja">
+            </app-validators-messages>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="col-12">
+          <textarea matInput placeholder="Nota:" [(ngModel)]="params.prestamo.detalle"
+            (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+            [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+            name="params.prestamo.detalle" #params.prestamo.detalle="ngModel"></textarea>
+          <mat-error>
+            <app-validators-messages [controlVar]="params.prestamo.detalle" labelName="detalle">
+            </app-validators-messages>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-12 text-right alinear33">
+        <button mat-raised-button="" (click)="pagar()" [disabled]="isInvalid(CrudPagoForm)" type="button"
+          class="btn btn-fill pagar btn-sm btn-primary" matTooltip="Realizar Pago"></button>
+      </div>
+    </form>
+  </div>
+  <div class="card-body">
+    <div class="row" *ngIf="showDetalle==1">
+      <mat-form-field class="col-6">
+        <input matInput placeholder="Fecha de Pago:" [(ngModel)]="e.fePago" readonly>
+      </mat-form-field>
+      <mat-form-field class="col-6">
+        <input matInput placeholder="Caja:" [(ngModel)]="e.noCaja" readonly>
+      </mat-form-field>
+      <mat-form-field *ngIf="e.tipoPago.idTipoPago==2" class="col-6">
+        <input matInput placeholder="Banco:" [(ngModel)]="e.banco.noBanco" readonly>
+      </mat-form-field>
+      <mat-form-field *ngIf="e.tipoPago.idTipoPago==2" class="col-6">
+        <input matInput placeholder="Descripción Depósito:" [(ngModel)]="e.comentarioDeposito" readonly>
+      </mat-form-field>
+      <mat-form-field class="col-6">
+        <input matInput placeholder="Nota:" [(ngModel)]="e.detalle" readonly>
+      </mat-form-field>
+      <mat-form-field *ngIf="e.mora!=null" class="col-6">
+        <input matInput placeholder="Mora:" [(ngModel)]="e.mora" readonly>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

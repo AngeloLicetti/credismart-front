@@ -1,0 +1,119 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="container-fluid">
+      <div class="header text-center">
+        <p>Charts</p>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <mat-form-field class="example-full-width">
+            <input matInput [matDatepicker]="dp" [formControl]="date" name="date" placeholder="Mes:">
+            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+            <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+              (monthSelected)="chosenMonthHandler($event, dp)" panelClass="example-month-picker">
+            </mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+
+
+      <div class="row">
+
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-info">
+              <div class="card-icon">
+                <i class="material-icons">timeline</i>
+              </div>
+              <h4 class="card-title">Prestamos por mes por empleado</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <ngx-charts-bar-vertical
+                  [view]="viewPrestamosPorMes"
+                  [scheme]="colorSchemePrestamosPorMes"
+                  [results]="multiPrestamosPorMes"
+                  [gradient]="gradientPrestamosPorMes"
+                  [xAxis]="showXAxisPrestamosPorMes"
+                  [yAxis]="showYAxisPrestamosPorMes"
+                  [legend]="showLegendPrestamosPorMes"
+                  [legendPosition]="legendPositionPrestamosPorMes"
+                  [showXAxisLabel]="showXAxisLabelPrestamosPorMes"
+                  [showYAxisLabel]="showYAxisLabelPrestamosPorMes"
+                  [xAxisLabel]="xAxisLabelPrestamosPorMes"
+                  [yAxisLabel]="yAxisLabelPrestamosPorMes"
+                  [legendTitle]="legendTitlePrestamosPorMes">
+                </ngx-charts-bar-vertical>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-info">
+              <div class="card-icon">
+                <i class="material-icons">timeline</i>
+              </div>
+              <h4 class="card-title">Cobranzas por mes por empleado</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <ngx-charts-bar-vertical
+                  [view]="viewCobranzasPorMes"
+                  [scheme]="colorSchemeCobranzasPorMes"
+                  [results]="multiCobranzasPorMes"
+                  [gradient]="gradientCobranzasPorMes"
+                  [xAxis]="showXAxisCobranzasPorMes"
+                  [yAxis]="showYAxisCobranzasPorMes"
+                  [legend]="showLegendCobranzasPorMes"
+                  [legendPosition]="legendPositionCobranzasPorMes"
+                  [showXAxisLabel]="showXAxisLabelCobranzasPorMes"
+                  [showYAxisLabel]="showYAxisLabelCobranzasPorMes"
+                  [xAxisLabel]="xAxisLabelCobranzasPorMes"
+                  [yAxisLabel]="yAxisLabelCobranzasPorMes"
+                  [legendTitle]="legendTitleCobranzasPorMes">
+                </ngx-charts-bar-vertical>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-icon card-header-info">
+              <div class="card-icon">
+                <i class="material-icons">timeline</i>
+              </div>
+              <h4 class="card-title">Gastos por mes por empleado</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <ngx-charts-bar-vertical
+                  [view]="viewGastosPorMes"
+                  [scheme]="colorSchemeGastosPorMes"
+                  [results]="multiGastosPorMes"
+                  [gradient]="gradientGastosPorMes"
+                  [xAxis]="showXAxisGastosPorMes"
+                  [yAxis]="showYAxisGastosPorMes"
+                  [legend]="showLegendGastosPorMes"
+                  [legendPosition]="legendPositionGastosPorMes"
+                  [showXAxisLabel]="showXAxisLabelGastosPorMes"
+                  [showYAxisLabel]="showYAxisLabelGastosPorMes"
+                  [xAxisLabel]="xAxisLabelGastosPorMes"
+                  [yAxisLabel]="yAxisLabelGastosPorMes"
+                  [legendTitle]="legendTitleGastosPorMes">
+                </ngx-charts-bar-vertical>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="card ">
+      <div class="card-header  card-header-icon">
+        <div class="card-icon cardHeader">
+          <i class="material-icons">search</i>
+        </div>
+      </div>
+      <div class="card-body ">
+        <div class="row">
+          <div class="col-md-3 text-right"></div>
+            <mat-form-field class="col-sm-6 text-center">
+              <input matInput placeholder="Nombre de la Empresa" [(ngModel)]="params.razonSocial"
+                (input)="busqueda($event.target.value)" matTooltip="Mínimo 2 caracteres" [matTooltipPosition]="'above'"
+                (keypress)="setInputPattern($event, 'letters')"
+                [pattern]="setValidatorPattern('letters', setQuantifier('+'), true, true)">
+            </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 text-right">
+      <button mat-raised-button="" [routerLink]="['crudempresas',  '0']"  type="button" class="btn btn-fill search btn-sm btn-primary" matTooltip="Agregar"  [matTooltipPosition]="'left'">
+        <i class="material-icons">add</i>
+      </button>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-3" *ngFor="let element of empresasList">
+        <br>
+        <div class="card card-product">
+          <div class="card-header card-header-image" data-header-animation="true">
+            <img class="img mat-financiera" alt="Responsive image"
+              src="{{element.foto ? element.foto : 'assets/img/credismart/icono_credi.jpeg'}}">
+          </div>
+          <div class="card-body">
+            <div class="card-actions text-center">
+              <button mat-raised-button type="button" class="btn btn-info btn-link" matTooltip="Editar"
+                [matTooltipPosition]="'below'" [routerLink]="['crudempresas', element.idFinanciera ]">
+                <i class="material-icons">edit</i>
+              </button>
+              <button mat-raised-button type="button" class="btn btn-danger btn-link" matTooltip="Desactivar"
+                [matTooltipPosition]="'below'">
+                <i class="material-icons">delete</i>
+              </button>
+              <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Activar"
+                [matTooltipPosition]="'below'">
+                <i class="material-icons">done</i>
+              </button>
+            </div>
+            <h4 class="card-title">
+              {{ element.razonSocial }}
+            </h4>
+            <div class="card-description">
+              Teléfono: {{ element.telefono }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="card">
+  <div class="card-header card-header-icon">
+    <div class="card-icon cardHeader">
+      <i class="material-icons">next_week</i>
+    </div>
+    <h4 class="card-title">{{titulo}}
+      <button mat-icon-button class="close" (click)="close()">
+        <i class="material-icons">close</i> </button>
+    </h4>
+  </div>
+  <br>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <mat-form-field class="example-full-width">
+          <mat-select #listaOpciones placeholder="Empleado:" name="idEmpleado" #idEmpleado="ngModel"
+            [(ngModel)]="params.idEmpleadoAsignado" id="idEmpleado" [disabled]="disabled">
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let emp of empleadoList" [value]="emp.idEmpleado">
+              {{emp.noDescripcion}}
+            </mat-option>
+          </mat-select>
+          <mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+        <mat-form-field class="example-full-width">
+          <input matInput type="text" value="" placeholder="Descripcion Caja:" [(ngModel)]="params.descripcionCaja"
+            name="descripcionCaja" #descripcionCaja="ngModel" required
+            (keypress)="setInputPattern($event, 'soloUnEspacio')"
+            [pattern]="setValidatorPattern('soloUnEspacio', setQuantifier('+'), true, true)">
+          <mat-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="category form-category col-12">* Campos requeridos</div>
+    </div>
+    <div class="text-center">
+      <button mat-raised-button="" *ngIf="op==0"
+        [disabled]="params.idEmpleadoAsignado==null||params.descripcionCaja==null" (click)="insertarCaja()"
+        type="button" class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Registrar"></button>
+      <button mat-raised-button="" (click)="actualizarCaja()" *ngIf="op==1"
+        [disabled]="params.idEmpleadoAsignado==null||params.descripcionCaja==null" type="button"
+        class="btn btn-fill actualizar btn-sm btn-primary" matTooltip="Modificar"></button>
+        &nbsp;<button mat-raised-button="" (click)="close()" type="button" class="btn btn-fill cerrar btn-sm btn-primary"
+        matTooltip="Cerrar">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <div class="card ">
+                    <div class="card-header  card-header-icon">
+                        <div class="card-icon cardHeader">
+                            <i class="material-icons">vpn_key</i>
+                        </div>
+                    </div>
+                    <form #cambiarPassword="ngForm" novalidate name="cambiarPassword">
+                        <br/>
+                        <div class="col-sm-12 mdl-input-group mdl-input-group__only">
+                            <mat-form-field class="example-full-width">
+                                <span matPrefix><i class="material-icons">lock_outline</i></span>
+                                <input matInput placeholder="Contrase&ntilde;a Actual:" type="{{type}}"
+                                    name="contrasenaActual" #contrasenaActual="ngModel" id="contrasenaActual"
+                                    [(ngModel)]="contrasenaAct" required />
+                                <button mat-button *ngIf="contrasenaAct" matSuffix mat-icon-button
+                                    (mousedown)="enter('type')" (mouseup)="leave('type')" (mouseleave)="leave('type')">
+                                    <div class="example-tooltip-host" matTooltip="Ver" [matTooltipPosition]="'above'">
+                                        <mat-icon>visibility</mat-icon>
+                                    </div>
+                                </button>
+                                <mat-error>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-12 mdl-input-group mdl-input-group__only">
+                            <mat-form-field class="example-full-width">
+                                <span matPrefix><i class="material-icons">lock_outline</i></span>
+                                <input matInput placeholder="Nueva Contrase&ntilde;a:" type="{{type2}}"
+                                    name="NuevaContrasena" #NuevaContrasena="ngModel" id="NuevaContrasena"
+                                    [(ngModel)]="nuevaPassword" required />
+                                <button mat-button *ngIf="nuevaPassword" matSuffix mat-icon-button
+                                    (mousedown)="enter('type2')" (mouseup)="leave('type2')"
+                                    (mouseleave)="leave('type2')">
+                                    <div class="example-tooltip-host" matTooltip="Ver" [matTooltipPosition]="'above'">
+                                        <mat-icon>visibility</mat-icon>
+                                    </div>
+                                </button>
+                                <mat-error>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-sm-12 mdl-input-group mdl-input-group__only">
+                            <mat-form-field class="example-full-width">
+                                <span matPrefix><i class="material-icons">lock_outline</i></span>
+                                <input matInput placeholder="Confirmar Contrase&ntilde;a:" type="{{type3}}"
+                                    name="confirmarContrasena" #confirmarContrasena="ngModel" id="confirmarContrasena"
+                                    [(ngModel)]="confirmarPassword" [equalTo]="NuevaContrasena" required />
+                                <button mat-button *ngIf="confirmarPassword" matSuffix mat-icon-button
+                                    (mousedown)="enter('type3')" (mouseup)="leave('type3')"
+                                    (mouseleave)="leave('type3')">
+                                    <div class="example-tooltip-host" matTooltip="Ver" [matTooltipPosition]="'above'">
+                                        <mat-icon>visibility</mat-icon>
+                                    </div>
+                                </button>
+                                <mat-error>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="text-center">
+                            <button mat-raised-button class="btn bntAgregar btn-round"
+                                (click)="cambiarContrasena(cambiarPassword)" [disabled]="isInvalid(cambiarPassword)">
+                                Cambiar Contrase&ntilde;a
+                            </button>
+                            <br/>
+                        </div>
+                        <br/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

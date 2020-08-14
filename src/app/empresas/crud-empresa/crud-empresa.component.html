@@ -1,0 +1,107 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-icon">
+          <div class="card-icon cardHeader">
+            <i class="material-icons">apartment</i>
+          </div>
+          <h4 class="card-title">Empresa Financiera</h4>
+        </div>
+        <form name="CrudEmpresa" #CrudEmpresa="ngForm" novalidate>
+          <div class="card-body">
+            <div class="row">
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Razón Social:" [(ngModel)]="params.empresa.razonSocial"
+                  name="params.empresa.noCliente" (keypress)="setInputPattern($event, 'nombresFinanciera')"
+                  [pattern]="setValidatorPattern('nombresFinanciera', setQuantifier('+'), true, true)"
+                  #params.empresa.noCliente="ngModel" required>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Abreviatura:" [(ngModel)]="params.empresa.abreviatura"
+                  name="params.empresa.abreviatura" (keypress)="setInputPattern($event, 'nombresFinanciera')"
+                  [pattern]="setValidatorPattern('nombresFinanciera', setQuantifier('+'), true, true)"
+                  #params.empresa.noApellido="ngModel" required>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="RUC:" [(ngModel)]="params.empresa.ruc" minlength="11" maxlength="11"
+                  name="ruc" #ruc="ngModel" (keypress)="setInputPattern($event, 'positiveDigits')"
+                  [pattern]="setValidatorPattern('positiveDigits', setQuantifier('+'), true, true)">
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Dirección:" [(ngModel)]="params.empresa.direccion"
+                  name="params.empresa.direccion" (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  #params.empresa.direccion="ngModel">
+              </mat-form-field>
+              <mat-form-field class="col-sm-6">
+                <input matInput placeholder="Teléfono:" [(ngModel)]="params.empresa.telefono" minlength="7"
+                  maxlength="9" name="nuCelular" #nuCelular="ngModel"
+                  (keypress)="setInputPattern($event, 'positiveDigits')"
+                  [pattern]="setValidatorPattern('positiveDigits', setQuantifier('+'), true, true)">
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <div class="col-md-6 text-center">
+                <h5>Logo de la Empresa</h5>
+                <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                  <div class="fileinput-new thumbnail img-circle">
+                    <img src="assets/img/credismart/icono_credi.jpeg" alt="..." >
+                  </div>
+                  <div class="fileinput-preview fileinput-exists thumbnail img-circle"></div>
+                  <div>
+                    <span class="btn btn-round btn-rose btn-file">
+                      <span class="fileinput-new">Agregar Foto</span>
+                      <span class="fileinput-exists">Cambiar</span>
+                      <input type="file" name="..." (change)="esteRecibe($event)" />
+                    </span>
+                    <br />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title">Datos del Usuario</h4>
+            <div class="row">
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Nombre:" [(ngModel)]="request.user.nombre" name="request.user.nombre"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioLetra')"
+                  [pattern]="setValidatorPattern('soloUnEspacioLetra', setQuantifier('+'), true, true)"
+                  #request.user.nombre="ngModel" required>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Apellidos:" [(ngModel)]="request.user.apellido"
+                  name="request.user.apellido" (keypress)="setInputPattern($event, 'soloUnEspacioLetra')"
+                  [pattern]="setValidatorPattern('soloUnEspacioLetra', setQuantifier('+'), true, true)"
+                  #params.request.user="ngModel" required>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput type="email" placeholder="Email:" [(ngModel)]="request.user.correo" name="nuDni"
+                  #request.user.correo="ngModel" required ngvemail>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <div class="category form-category col-12">* Campos requeridos</div>
+            </div>
+          </div>
+        </form>
+        <div class="col-12 text-right ">
+          <button mat-raised-button="" *ngIf="op==0" [disabled]="isInvalid(CrudEmpresa)" (click)="registrar()"
+          type="button" class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Registrar"
+          [matTooltipPosition]="'above'"></button>
+          <button mat-raised-button="" *ngIf="op!=0" [disabled]="isInvalid(CrudEmpresa)" (click)="actualizar()"
+          type="button" class="btn btn-fill actualizar btn-sm btn-primary" matTooltip="Modificar"
+          [matTooltipPosition]="'above'"></button>
+          &nbsp;<button mat-raised-button="" [routerLink]="['/empresas']" type="button"
+            class="btn btn-fill cerrar btn-sm btn-primary" matTooltip="Cerrar" [matTooltipPosition]="'above'">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,213 @@
+<div class="card">
+  <div class="card-header card-header-icon">
+    <div class="card-icon cardHeader">
+      <i class="material-icons">assessment</i>
+    </div>
+    <h4 class="card-title">Tarjeta de Control
+      <button mat-icon-button class="close" (click)="close()">
+        <i class="material-icons">close</i> </button>
+    </h4>
+  </div>
+  <br>
+  <div class="card-body">
+    <div class="row">
+      <mat-form-field class="col-sm-4">
+        <input matInput placeholder="Cliente:" [(ngModel)]="e.noCliente?e.noCliente:e.cliente" readonly>
+      </mat-form-field>
+      <mat-form-field class="col-sm-4">
+        <input matInput placeholder="Tipo Préstamo:" [(ngModel)]="tipoPres" readonly>
+      </mat-form-field>
+      <mat-form-field class="col-sm-4">
+        <input matInput placeholder="Monto:" [(ngModel)]="monto" readonly>
+      </mat-form-field>
+      <mat-form-field class="col-sm-4">
+        <input matInput placeholder="Interés:" [(ngModel)]="interes" readonly>
+      </mat-form-field>
+      <mat-form-field class="col-sm-4">
+        <input matInput placeholder="Cuota:" [(ngModel)]="cuota" readonly>
+      </mat-form-field>
+      <mat-form-field class="col-sm-4">
+        <input matInput placeholder="Fecha de Inicio:" [(ngModel)]="fechaInicio" readonly>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="material-datatables table-responsive" *ngIf="show==1">
+      <table id="dtResultado" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
+        style="width:100%">
+        <thead class="cabeceraTable">
+          <tr>
+            <th class="text-center">N° Cuota</th>
+            <th class="text-center">Fecha de Cuota</th>
+            <th class="text-center">Pago</th>
+            <th class="text-center">Opciòn</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let element of listPagos; let i = index">
+            <td class="text-center">{{i+1}} </td>
+            <td class="text-center">{{element.fecha_cuota}}</td>
+            <td class="text-center">
+              <mat-label *ngIf="element.monto!=null" for="cuota">{{ element.monto | currency: 'S/'}}</mat-label>
+              <mat-label *ngIf="element.monto==null && element.estado==1" for="cuota">Por pagar</mat-label>
+              <mat-label *ngIf="element.estado==0" for="fecha" class="badge badge-warning">Cuota Vencida
+              </mat-label>
+            </td>
+            <td class="text-center">
+              <button *ngIf="element.monto!=null" class="enlace col-12 text-center" role="link"
+                (click)="agregarPago(element,1)" matTooltip="Ver más..."
+                [matTooltipPosition]="'above'">{{ element.tipoPago.noTipo}} /
+                {{ element.empleado.noNombre}} / {{ element.fePago}} </button>
+              <mat-checkbox *ngIf="element.monto==null && element.estado==0" [(ngModel)]="element.checked"
+                [value]="true" (change)="calcularPago(element,$event,0)"></mat-checkbox>
+              <mat-checkbox *ngIf="element.monto==null && element.estado==1" [(ngModel)]="element.checked"
+                [value]="true" [disabled]="disabled" (change)="agregarIdPago($event)"></mat-checkbox>
+              <mat-checkbox *ngIf="element.monto!=null && auxSaldo==0 && i==listPagos.length-1"
+                [(ngModel)]="element.checked" [value]="true" (change)="saldoRestante(element)"></mat-checkbox>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <div class="justify-content-between">
+        <h5 class="col-auto"> <strong> Interés + Capital: </strong> {{total | currency: 'S/'}}</h5>
+        <h5 class="col-auto"> <strong> Saldo Restante: </strong> {{saldo | currency: 'S/'}}</h5>
+      </div>
+      <div class="col-12 text-right">
+        <button mat-raised-button="" *ngIf="idPago.length!=0" (click)="agregarPago(listPagos[0],0)" type="button"
+          class="btn btn-fill pagar btn-sm btn-primary" matTooltip="Pagar"></button>
+        <button mat-raised-button="" *ngIf="aux2==1" (click)="agregarPago2()" type="button"
+          class="btn btn-fill pagar btn-sm btn-primary" matTooltip="Pagar"></button>
+        &nbsp;<button mat-raised-button="" *ngIf="total!=saldo" (click)="imprimir()" type="button"
+          class="btn btn-fill printing btn-sm btn-primary" matTooltip="Imprimir">
+          <i class="material-icons">print</i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div style="display:none">
+  <div id="print-tarjeta" style="font-family: Arial, Helvetica, sans-serif;color: #000; font-size: 16px;">
+    <div style="display:flex;">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+          <tr>
+            <td width="30%">
+              <div style="margin-bottom: 5px;padding-left: 20%;">
+                <img style="height: 100px; width: 150px;"
+                  src="{{logo ? logo : './assets/img/credismart/icono_credi.jpeg'}}">
+              </div>
+            </td>
+            <td width="40%">
+              <div
+                style="text-align: center; font-family: Arial, Helvetica, 'sans-serif'; color: #212121;  font-size: 28px;line-height: 35px; ">
+                {{nombre}}<br>
+                {{dir}}<br>
+                Tlf: {{tel}}
+              </div>
+            </td>
+            <td width="30%">
+              <div
+                style="text-align: center; font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; line-height: 20px;">
+                <strong>Fecha:</strong> {{fecha_str}}<br>
+                <strong>Hora: </strong>{{hora}} <br>
+              </div>
+            </td>
+          </tr>
+          <br>
+        </tbody>
+        <br>
+      </table>
+    </div>
+    <div
+      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 24px; margin-top: 20px; text-align: CENTER; line-height: 28px">
+      <strong>TARJETA DE CONTROL</strong><br>
+    </div>
+    <div style="margin-top: 15px;">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+          <tr>
+            <td width="35%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: center; line-height: 28px">
+                <strong>Cliente: </strong>{{e.noCliente?e.noCliente:e.cliente}}<br>
+                <strong>Interés: </strong>{{interes}}<br>
+              </div>
+            </td>
+            <td width="30%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: center; line-height: 28px">
+                <strong>Tipo Préstamo: </strong>{{tipoPres}}<br>
+                <strong>Cuotas: </strong>{{cuota}}<br>
+              </div>
+            </td>
+            <td width="35%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 16px; padding: 15px; text-align: center; line-height: 28px">
+                <strong>Monto: </strong>{{monto}}<br>
+                <strong>Fecha Inicio: </strong>{{fechaInicio}}<br>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top: 20px;">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <thead style="background-color:#1d5ea0; color:white;text-transform: uppercase;">
+          <tr>
+            <th width="20%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif';font-size: 16px; padding: 16px; text-align: center; line-height: 28px;font-weight: bold">
+                N° Cuota </div>
+            </th>
+            <th width="20%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif';font-size: 16px; padding: 16px; text-align: center; line-height: 28px;font-weight: bold">
+                Fecha de cuota</div>
+            </th>
+            <th width="20%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif';font-size: 16px; padding: 16px; text-align: center; line-height: 28px;font-weight: bold">
+                Pago</div>
+            </th>
+            <th width="40%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif';font-size: 16px; padding: 16px; text-align: center; line-height: 28px;font-weight: bold">
+                Detalle</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of listPagos; let i = index">
+            <td width="20%" align="center"
+              style="border-bottom: solid 1px #ddd; max-width: 300px; overflow-wrap: break-word;font-family: Arial, Helvetica, 'sans-serif'; color: #212121;font-size: 16px; padding: 20px; text-align: center;">
+              {{i+1}}
+            </td>
+            <td width="20%" align="right"
+              style="border-bottom: solid 1px #ddd; font-family: Arial, Helvetica, 'sans-serif'; color: #212121;font-size: 16px; padding: 20px; text-align: center; ">
+              {{row.fecha_cuota}}
+            </td>
+            <td width="20%" align="center"
+              style="border-bottom: solid 1px #ddd; font-family: Arial, Helvetica, 'sans-serif';font-size: 16px; padding: 20px; text-align: center;">
+              <mat-label *ngIf="row.monto!=null" for="cuota" style=" color: #212121">
+                {{ row.monto | currency: 'S/'}}
+              </mat-label>
+              <mat-label *ngIf="row.monto==null && row.estado==1" style=" color: green">Por pagar
+              </mat-label>
+              <mat-label *ngIf="row.estado==0" style=" color: red">Cuota Vencida</mat-label>
+            </td>
+            <td width="40%" align="center"
+              style="border-bottom: solid 1px #ddd; font-family: Arial, Helvetica, 'sans-serif'; color: #212121;font-size: 16px; padding: 20px; text-align: center;">
+              <mat-label *ngIf="row.monto!=null" for="cuota">{{ row.tipoPago.noTipo}} /
+                {{ row.empleado.noNombre}} / {{ row.fePago}}
+              </mat-label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

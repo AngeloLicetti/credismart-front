@@ -1,0 +1,47 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="card" >
+      <div class="card-header  card-header-icon">
+        <div class="card-icon cardHeader">
+          <i class="material-icons">storefront</i>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col-12 text-right">
+          <button mat-raised-button="" (click)="goCrud(null,0)" type="button" class="btn btn-fill search btn-sm btn-primary" matTooltip="Agregar"  [matTooltipPosition]="'left'">
+            <i class="material-icons">add</i>
+          </button>
+        </div>
+        <br>
+        <div class="material-datatables table-responsive" *ngIf="listLugares.length!=0">
+          <table id="dtResultado" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%"
+            style="width:100%">
+            <thead class="cabeceraTable">
+              <tr>
+                <th class="text-center">N°</th>
+                <th class="text-center">Lugar</th>
+                <th class="text-center">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let element of listLugares; let i = index">
+                <td class="text-center">{{i+1}} </td>
+                <td class="text-center">{{element.nombreLugar}}</td>
+                <td class="text-center">
+                  <button mat-raised-button type="button" class="btn-simple btn-info edit btn-icon" matTooltip="Editar"
+                  [matTooltipPosition]="'below'" (click)="goCrud(element,1)">
+                    <i class="material-icons">edit</i>
+                  </button>
+                  <button mat-raised-button type="button" class="btn-simple btn-info delete btn-icon" matTooltip="Eliminar"
+                  [matTooltipPosition]="'below'" (click)="deleteLugar(element)">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

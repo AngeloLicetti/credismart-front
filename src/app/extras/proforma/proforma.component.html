@@ -1,0 +1,428 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-icon">
+          <div class="card-icon cardHeader">
+            <i class="material-icons">ballot</i>
+          </div>
+          <h4 class="card-title">Cliente</h4>
+        </div>
+        <form name="CrudProForm" #CrudProForm="ngForm" novalidate>
+          <div class="card-body">
+            <div class="row">
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Cliente:" [matAutocomplete]="auto" [(ngModel)]="params.noCliente"
+                  name="params.noCliente" (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  (input)="busqueda($event.target.value)"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  #params.noCliente="ngModel" required>
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option (onSelectionChange)="selectCliente(lm)" *ngFor="let lm of listTClientes"
+                    [value]="lm.noCliente">
+                    <span>{{ lm.noCliente}}</span>
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Tipo de Documento " name="params.idTipoDocide"
+                  #params.idTipoDocide="ngModel" [(ngModel)]="params.idTipoDocide" id="params.idTipoDocide"
+                  (selectionChange)="changeInput(listaOpciones.value)" required>
+                  <mat-option *ngFor="let tp of tipoDoc" [value]="tp.idTipoDocumento">
+                    {{tp.nombreTipoDocumento}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Número de Documento :" [(ngModel)]="params.nuDocide"
+                  [minlength]="longitudDocumento" [maxlength]="longitudDocumento" name="nuDocide" #nuDocide="ngModel"
+                  (keypress)="setInputPattern($event, 'positiveDigits')"
+                  [pattern]="setValidatorPattern('positiveDigits', setQuantifier('+'), true, true)" required>
+                <mat-error>
+                  Número de Documento es requerido
+                </mat-error>
+                <mat-hint align="end" class="longitudInforme">
+                  {{ params.nuDocide.length? params.nuDocide.length: '0' }} /
+                  {{longitudDocumento?longitudDocumento:'?'}}
+                </mat-hint>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4" *ngIf="params.idTipoDocide==1 || params.idTipoDocide==2">
+                <mat-select #listaOpciones placeholder="Seleccione Sexo" name="params.idSexo" #params.idSexo="ngModel"
+                  [(ngModel)]="params.idSexo" id="params.idSexo" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let a of sexoList" [value]="a.idSexo">
+                    {{a.descripcionSexo}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4" *ngIf="params.idTipoDocide==1 || params.idTipoDocide==2">
+                <mat-select #listaOpciones placeholder="Seleccione Estado Civil" name="params.idEstadoCivil"
+                  #params.idEstadoCivil="ngModel" [(ngModel)]="params.idEstadoCivil" id="params.idEstadoCivil" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let e of estadoList" [value]="e.idEstadoCivil">
+                    {{e.descripcionEstadoCivil}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4" *ngIf="params.idTipoDocide==1 || params.idTipoDocide==2">
+                <input matInput type="text" [matDatepicker]="dp2" placeholder="Fecha de Nacimiento:"
+                  [(ngModel)]="params.feNacimiento" name="feNacimiento" #feNacimiento="ngModel"
+                  required>
+                <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                <mat-datepicker #dp2 disabled="false"></mat-datepicker>
+                <!-- <input matInput placeholder="Fecha de Nacimiento:" [(ngModel)]="params.feNacimiento" type="date"
+                  name="feNacimiento" #feNacimiento="ngModel" required> -->
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Departamento " name="params.idDepartamento"
+                  #params.idDepartamento="ngModel" [(ngModel)]="params.idDepartamento" id="params.idDepartamento"
+                  (ngModelChange)="getProvincias()" required>
+                  <mat-option *ngFor="let de of departamentos" [value]="de.idDepartamento">
+                    {{de.departamento}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Provincia " name="params.idProvincia"
+                  #params.idProvincia="ngModel" [(ngModel)]="params.idProvincia" id="params.idProvincia"
+                  (ngModelChange)="getDistritos()" required>
+                  <mat-option *ngFor="let pr of provincias" [value]="pr.idProvincia">
+                    {{pr.provincia}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Distrito" name="params.idDistrito"
+                  #params.idDistrito="ngModel" [(ngModel)]="params.idDistrito" id="params.idDistrito" required>
+                  <mat-option *ngFor="let dis of distritos" [value]="dis.idDistrito">
+                    {{dis.distrito}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <textarea matInput placeholder="Dirección:" [(ngModel)]="params.noDireccion"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  name="params.noDireccion" #params.noDireccion="ngModel" matTextareaAutosize matAutosizeMinRows="2"
+                  matAutosizeMaxRows="3" required></textarea>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <textarea matInput placeholder="Referencia:" [(ngModel)]="params.noReferencia"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetra')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetra', setQuantifier('+'), true, true)"
+                  name="params.noReferencia" #params.noReferencia="ngModel" matTextareaAutosize matAutosizeMinRows="2"
+                  matAutosizeMaxRows="3"></textarea>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <textarea matInput placeholder="Ocupación / Rubro:" [(ngModel)]="params.noOcupacion"
+                  (keypress)="setInputPattern($event, 'soloUnEspacioNumeroLetraPunto')"
+                  [pattern]="setValidatorPattern('soloUnEspacioNumeroLetraPunto', setQuantifier('+'), true, true)"
+                  name="params.noOcupacion" #params.noOcupacion="ngModel" matTextareaAutosize matAutosizeMinRows="2"
+                  matAutosizeMaxRows="3" required></textarea>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Celular:" [(ngModel)]="params.nuCelular" minlength="9" maxlength="9"
+                  name="nuCelular" #nuCelular="ngModel" (keypress)="setInputPattern($event, 'cellPhone')"
+                  [pattern]="setValidatorPattern('cellPhone', setQuantifier('+'), true, true)" required>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <input matInput placeholder="Email:" name="email" #email="ngModel" [(ngModel)]="params.noEmail"
+                  ngvemail>
+                <mat-error>
+                  Email inválido
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="col-sm-4">
+                <mat-select #listaOpciones placeholder="Seleccione Cobrador" name="params.idEmpleado"
+                  #params.idEstadoCivil="ngModel" [(ngModel)]="params.idEmpleado" id="params.idEmpleado" required>
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let e of empleadoList" [value]="e.idEmpleado">
+                    {{e.noDescripcion}}
+                  </mat-option>
+                </mat-select>
+                <mat-error>
+                </mat-error>
+              </mat-form-field>
+              <span class="col-12 border-top my-3 before"></span>
+            </div>
+            <h5>Detalle del Préstamo</h5>
+            <form name="CrudCalcularForm" #CrudCalcularForm="ngForm" novalidate>
+              <div class="row">
+                <mat-form-field class="col-sm-4">
+                  <input matInput placeholder="Monto:" [(ngModel)]="params.monto"
+                    (keypress)="setInputPattern($event, 'realPrices')" name="montoTotal" #montoTotal="ngModel"
+                    (input)="verificar()" minlength="3" maxlength="8"
+                    [pattern]="setValidatorPattern('realPrices', setQuantifier('+'), true, true)" required>
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="col-sm-4">
+                  <input matInput placeholder="Interes:" [(ngModel)]="params.interes2" maxlength="5" name="interes"
+                    #interes="ngModel" (keypress)="setInputPattern($event, 'realPrices')" (input)="verificar()"
+                    pattern="^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$" required>
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="col-sm-4">
+                  <input matInput placeholder="N° Cuotas:" [(ngModel)]="params.nuCuotas" name="Cuotas"
+                    (keypress)="setInputPattern($event, 'positiveDigits')" minlength="1" maxlength="2"
+                    [pattern]="setValidatorPattern('digitos', setQuantifier('+'), true, true)" #Cuotas="ngModel"
+                    (input)="verificar()" required>
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="col-sm-4">
+                  <mat-select #listaOpciones placeholder="Tipo Préstamo" name="params.idTipoPrestamo"
+                    #params.idTipoPrestamo="ngModel" [(ngModel)]="params.idTipoPrestamo" id="params.idTipoPrestamo"
+                    (ngModelChange)="verificar()" required>
+                    <mat-option>--</mat-option>
+                    <mat-option *ngFor="let el of listTiposPrestamos" [value]="el.idTipoPrestamo">
+                      {{el.noTipo}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="col-sm-4">
+                  <input matInput type="text" [matDatepicker]="dp" name="params.feAux" #params.feAux="ngModel"
+                    [(ngModel)]="params.feAux" placeholder="Fecha de Inicio:" [min]="maxfechRN" required>
+                  <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                  <mat-datepicker #dp disabled="false"></mat-datepicker>
+                  <!-- <input matInput placeholder="Fecha de Inicio:" [(ngModel)]="params.feInicio" type="date"
+                    name="params.feInicio" #params.feInicio="ngModel" (input)="verificar()" required> -->
+                </mat-form-field>
+                <mat-form-field class="col-sm-4">
+                  <mat-select #listaOpciones placeholder="Seleccione Caja" name="params.idCaja" #params.idCaja="ngModel"
+                    [(ngModel)]="params.idCaja" id="params.idCaja" (ngModelChange)="getMonto()">
+                    <mat-option>--</mat-option>
+                    <mat-option *ngFor="let ele of listCajas" [value]="ele.idAperturaCaja">
+                      {{ele.descripcionCaja}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>
+                  </mat-error>
+                </mat-form-field>
+                <div class="col-sm-12 text-right">
+                  <button mat-raised-button="" [disabled]="isInvalid(CrudCalcularForm) || bloqueado==0"
+                    (click)="calcular()" type="button" class="btn btn-fill calculadora btn-sm btn-primary"
+                    matTooltip="Calcular" [matTooltipPosition]="'above'"></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </form>
+        <div class="card-body">
+          <div class="material-datatables table-responsive" *ngIf="show==1">
+            <table id="dtResultado" class="table table-striped table-no-bordered table-hover" cellspacing="0"
+              width="100%" style="width:100%">
+              <thead class="cabeceraTable">
+                <tr>
+                  <th class="text-center">N° Cuota</th>
+                  <th class="text-center">Fecha de Cuota</th>
+                  <th class="text-center">Importe</th>
+                  <th class="text-center">Interés</th>
+                  <th class="text-center">Cuota</th>
+                  <th class="text-center">Saldo</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let element of listPagos; let i = index">
+                  <td class="text-center">{{element.idPago}} </td>
+                  <td class="text-center">{{element.fecha_cuota | date:'dd-MM-yyyy'}}</td>
+                  <td class="text-center">{{element.importe | currency: 'S/'}}</td>
+                  <td class="text-center">{{element.interes | currency: 'S/'}}</td>
+                  <td class="text-center" style="color: red;"><strong>
+                      {{ element.cuota | currency: 'S/'}}
+                    </strong>
+                  </td>
+                  <td class="text-center">{{element.saldo | currency: 'S/'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <h4 class="col-sm-6" style="margin-left: 20px;" *ngIf="show==1">
+          <strong>
+            Interés + Capital: {{total| currency: 'S/'}}
+          </strong>
+        </h4>
+
+        <div class="col-sm-12 text-right ">
+          <button mat-raised-button=""
+            [disabled]="isInvalid(CrudProForm) || !params.idCaja || isInvalid(CrudCalcularForm) || listPagos.length==0"
+            type="button" class="btn btn-fill registrar btn-sm btn-primary" matTooltip="Confirmar" (click)="confirmar()"
+            [matTooltipPosition]="'above'"></button>
+          &nbsp;
+          <!-- <button mat-raised-button=""
+            [disabled]="isInvalid(CrudProForm) || !params.idCaja || isInvalid(CrudCalcularForm) || listPagos.length==0"
+            (click)="confirmar()" type="button" class="btn btn-fill pagare btn-sm btn-primary" matTooltip="Confirmar"
+            [matTooltipPosition]="'above'"></button> -->
+          &nbsp;<button mat-raised-button="" [disabled]="!params.feInicio" (click)="imprimir()" type="button"
+            class="btn btn-fill printing btn-sm btn-primary" matTooltip="Imprimir" [matTooltipPosition]="'above'">
+            <i class="material-icons">print</i>
+          </button>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div style="display:none">
+  <div id="print-section-material" style="font-family: Arial, Helvetica, sans-serif;color: #000;font-size: 12px;">
+    <div style="display:flex;">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+          <tr>
+            <td width="30%">
+              <div style="margin-bottom: 5px;padding-left: 20%;">
+                <img style="height: 100px; width: 150px;"
+                  src="{{logo ? logo : './assets/img/credismart/icono_credi.jpeg'}}">
+              </div>
+            </td>
+            <td width="40%">
+              <div
+                style="text-align: center; font-family: Arial, Helvetica, 'sans-serif'; color: #212121;  font-size: 28px;line-height: 35px; ">
+                {{nombre}}<br>
+                {{dir}}<br>
+                Tlf: {{tel}}
+              </div>
+            </td>
+            <td width="30%">
+              <div
+                style="text-align: center; font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 20px; line-height: 20px;">
+                <strong>Fecha:</strong> {{fecha_str}}<br>
+                <strong>Hora: </strong>{{hora}} <br>
+              </div>
+            </td>
+          </tr>
+          <br>
+        </tbody>
+        <br>
+      </table>
+    </div>
+    <div
+      style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 24px; padding: 15px; text-align: CENTER; line-height: 28px">
+      <strong>PROFORMA</strong>
+    </div>
+    <div style="margin-top: 10px;">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+          <tr>
+            <td width="35%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 20px;  padding: 15px; text-align: center; line-height: 28px">
+                <strong>Cliente: </strong>{{params.noCliente}} {{params.noApellido}}<br>
+                <strong>Interés: </strong>{{params.interes/100 | percent: '1.2'}}<br>
+              </div>
+            </td>
+            <td width="35%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 20px;  padding: 15px; text-align: center; line-height: 28px">
+                <strong>N° Documento: </strong>{{params.nuDocide}}<br>
+                <strong>N° Cuotas: </strong>{{params.nuCuotas}}<br>
+              </div>
+            </td>
+            <td width="35%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 20px;  padding: 15px; text-align: center; line-height: 28px">
+                <strong>Monto: </strong>{{params.monto | currency: 'S/'}}<br>
+                <strong>Fecha Inicio: </strong>{{params.feInicio | date:'dd-MM-yyyy'}}<br>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:20px;">
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <thead style="background-color:#1d5ea0; color:white;text-transform: uppercase;">
+          <tr>
+            <th width="16%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; font-size: 18px;  padding: 12px; text-align: center; line-height: 28px;font-weight: bold">
+                N° Cuota</div>
+            </th>
+            <th width="20%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; font-size: 18px;  padding: 12px; text-align: center; line-height: 28px;font-weight: bold">
+                Fecha de cuota</div>
+            </th>
+            <th width="16%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; font-size: 18px;  padding: 12px; text-align: center; line-height: 28px;font-weight: bold">
+                Importe</div>
+            </th>
+            <th width="16%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; font-size: 18px;  padding: 12px; text-align: center; line-height: 28px;font-weight: bold">
+                Interés</div>
+            </th>
+            <th width="16%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif'; font-size: 18px;  padding: 12px; text-align: center; line-height: 28px;font-weight: bold">
+                Cuota</div>
+            </th>
+            <th width="16%">
+              <div
+                style="font-family: Arial, Helvetica, 'sans-serif';font-size: 18px;  padding: 5px; text-align: center; line-height: 28px;font-weight: bold">
+                Saldo</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of listPagos">
+            <td width="16%" align="center"
+              style="border-bottom: solid 1px #ddd; padding: 20px; max-width: 300px; overflow-wrap: break-word;font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 18px;  text-align: center;">
+              {{row.idPago}}
+            </td>
+            <td width="20%" align="right" valign="top"
+              style="border-bottom: solid 1px #ddd; padding: 20px; font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 18px;  text-align: center; ">
+              {{row.fecha_cuota| date:'dd-MM-yyyy'}}
+            </td>
+            <td width="16%" align="center" valign="top"
+              style="border-bottom: solid 1px #ddd; padding: 20px; font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 18px;  text-align: center;text-transform: uppercase">
+              {{row.importe | currency: 'S/'}}
+            </td>
+            <td width="16%" align="center" valign="top"
+              style="border-bottom: solid 1px #ddd; padding: 20px; font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 18px;  text-align: center;text-transform: uppercase">
+              {{row.interes/100 | percent: '1.2'}}
+            </td>
+            <td width="16%" align="center" valign="top"
+              style="border-bottom: solid 1px #ddd; padding: 20px; font-family: Arial, Helvetica, 'sans-serif'; color: red; font-size: 18px;  text-align: center;text-transform: uppercase">
+              {{row.cuota| currency: 'S/'}}
+            </td>
+            <td width="16%" align="center" valign="top"
+              style="border-bottom: solid 1px #ddd; padding: 20px; font-family: Arial, Helvetica, 'sans-serif'; color: #212121; font-size: 18px;  text-align: center;text-transform: uppercase">
+              {{row.saldo| currency: 'S/'}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
